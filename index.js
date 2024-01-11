@@ -25,11 +25,33 @@ function turnoIA(i,j){
 
     //En caso de poder hacer 3 en raya la IA ataca
     if(turno){
+        //Horizontal
         for(let i = 0; i<DIMENSION_MATRIZ; i++){
             let oCount = 0;      
             let xCount = 0;
             let pos = [];
             for(let j = 0; j<DIMENSION_MATRIZ; j++){
+                if(vista[i][j].innerHTML == "O"){
+                    oCount++;
+                }else if(vista[i][j].innerHTML == "X"){
+                    xCount++;
+                }else if(vista[i][j].innerHTML == ""){
+                    pos.push(i,j);
+                }
+            }
+            if(oCount == 2 && xCount == 0){
+                vista[pos[0]][pos[1]].innerHTML = "O";
+                turno = false;
+            }
+        }
+    }
+    if(turno){
+        //Vertical
+        for(let j = 0; j<DIMENSION_MATRIZ;j++){
+            let oCount = 0;      
+            let xCount = 0;
+            let pos = [];
+            for(let i = 0; i<DIMENSION_MATRIZ;i++){
                 if(vista[i][j].innerHTML == "O"){
                     oCount++;
                 }else if(vista[i][j].innerHTML == "X"){
@@ -116,7 +138,7 @@ function turnoIA(i,j){
         }
     }
 
-    //MEJORA en caso de no tener coincidencias ponemos cerca de la casilla del jugador
+    //MEJORA en caso de no tener coincidencias buscamos el centro del tablero
     if(turno && vista[1][1].innerHTML == ""){
         vista[1][1].innerHTML = "O";
         turno = false;
@@ -135,44 +157,70 @@ function turnoIA(i,j){
              * 1 -> Derecha
              * 2 -> Abajo
              * 3 -> Izquierda
+             * i-1>=0 j-1>=0
+             * i-1>=0 j+1<=DIMENSION_MATRIZ
+             * i+1<=DIMENSION_MATRIZ j-1>=0
+             * i+1<=DIMENSION_MATRIZ j+1<=DIMENSION_MATRIZ
              */
             switch(direccion){
                 case 0: 
-                    if(i-1>=0 && vista[i-1][j].innerHTML == ""){
-                        vista[i-1][j].innerHTML = "O";
+                    if(i-1>=0 && j-1>=0 && vista[i-1][j-1].innerHTML == ""){
+                        vista[i-1][j-1].innerHTML = "O";
+                        turno = false;
                     }else{
                         error = true;
                     }
                 break;
                 case 1:
-                    if(j+1<DIMENSION_MATRIZ-1 && vista[i][j+1].innerHTML == ""){
-                        vista[i][j+1].innerHTML = "O";
+                    if(i-1>=0 && j+1<DIMENSION_MATRIZ && vista[i-1][j+1].innerHTML == ""){
+                        vista[i-1][j+1].innerHTML = "O";
+                        turno = false;
                     }else{
                         error = true;
                     }
                 break;
                 case 2:
-                    if(i+1<DIMENSION_MATRIZ-1 && vista[i+1][j].innerHTML == ""){
-                        vista[i+1][j].innerHTML = "O";
+                    if(i+1<DIMENSION_MATRIZ && j-1>=0 && vista[i+1][j-1].innerHTML == ""){
+                        vista[i+1][j-1].innerHTML = "O";
+                        turno = false;
                     }else{
                         error = true;
                     }
                 break;
                 case 3:
-                    if(j-1 >=0 && vista[i][j-1].innerHTML == ""){
-                        vista[i][j-1].innerHTML = "O";
+                    if(i+1<DIMENSION_MATRIZ && j+1<DIMENSION_MATRIZ && vista[i+1][j+1].innerHTML == ""){
+                        vista[i+1][j+1].innerHTML = "O";
+                        turno = false;
                     }else{
                         error = true;
                     }
                 break;
-
-                default: error = true;
             }
             contorlBucle++;
             if(contorlBucle>=1000){
                 error = false;
             }
         }while(error);
+    }
+    //Si no se ha colocado en alguna de las opciones anteriores se colocara aleatoriamente
+    if(turno){
+        let contorlBucle = 0;
+        let filas = Math.floor(Math.random()*3);
+        let columnas = Math.floor(Math.random()*3);
+        let error = false;
+        while(!error && vista[filas][columnas].innerHTML != "" ){
+            filas = Math.floor(Math.random()*3);
+            columnas = Math.floor(Math.random()*3);
+            contorlBucle++;
+            if(contorlBucle>=10000){
+                error = true;
+                console.log("Error en numero random");
+            }
+        }
+        if(!error && vista[filas][columnas].innerHTML == ""){
+            vista[filas][columnas].innerHTML = "O";
+            turno = false;
+        }
         turno = false;
     }
 }
@@ -180,11 +228,18 @@ function turnoIA(i,j){
 
 //Funcion para comprobar quien ha ganado
 function comprobarVictoria(){
+    let posicionesO = [];
+    let oCount = 0;
     for(let i = 0; i<DIMENSION_MATRIZ; i++){
+        oCount = 0;
         for(let j = 0; j<DIMENSION_MATRIZ; j++){
-            let matriz = document.getElementById(`fila${i}columna${j}`);
+            if(vista[i][j].innerHTML == "O"){
+                oCount++;
+                posicionesO.push(i,j,oCount);
+            }
         }
     }
+    console.log(posicionesO);
 
 }
 
