@@ -105,7 +105,7 @@ function turnoIA(i,j){
         }
     }
 
-    //MEJORA en caso de no tener coincidencias buscamos el centro del tablero
+    //MEJORA en caso de no tener coincidencias buscamos el centro del tablero o colocamos en un lateral
     if(turno && vista[1][1].innerHTML == ""){
         vista[1][1].innerHTML = "O";
         turno = false;
