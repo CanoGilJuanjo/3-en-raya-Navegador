@@ -190,6 +190,35 @@ function turnoIA(i,j){
         }
     }
 
+    //Correccion de la unica forma de ganar 
+    if(turno){
+        let cambiarEstrategia = false;
+        if((i == 0 && j == 0 && vista[DIMENSION_MATRIZ-1][DIMENSION_MATRIZ-1].innerHTML == "X")|| //arriba izquierda y abajo derecha
+        (i == DIMENSION_MATRIZ-1 && j == DIMENSION_MATRIZ-1 && vista[0][0].innerHTML == "X")||  //abajo derecha y arriba izquierda
+        (i == 0 && j == 2 && vista[2][0].innerHTML == "X")||    //arriba derecha y abajo izquierda
+        (i == 2 && j == 0 && vista[0][2].innerHTML == "X")){
+            cambiarEstrategia = true;
+        }
+        if(cambiarEstrategia){
+            turno = false;
+            let celdas = [[1,0],[0,1],[1,2],[2,1]];
+            let fila = Math.floor(Math.random()*4);
+            let controlBucle = 0;
+            let error = false;
+            console.log("Control forma de ganar")
+            while(!error && vista[celdas[fila][0]][celdas[fila][1]].innerHTML != ""){
+                fila = Math.floor(Math.random()*4);
+                controlBucle++;
+                if(controlBucle >= 1000){
+                    error = true;
+                }
+            }
+            if(!error){
+                vista[celdas[fila][0]][celdas[fila][1]].innerHTML = "O";
+            }
+        }
+    }
+
     if(turno){
         let direccion;
         let error;
@@ -273,6 +302,7 @@ function turnoIA(i,j){
             }
         }while(!error && turno);
     }
+
     //Si no se ha colocado en alguna de las opciones anteriores se colocara aleatoriamente
     if(turno){
         console.log("esquinas aleatorio")
