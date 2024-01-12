@@ -1,20 +1,21 @@
 let vista = [[],[],[]];
 const DIMENSION_MATRIZ = 3;
-
+let puntosIA = 0;
+let puntosJ = 0;
+let jugar = true;
 //Inicializa la matriz
 for(let i = 0; i<DIMENSION_MATRIZ;i++){
     for(let j = 0; j<DIMENSION_MATRIZ;j++){
         vista[i][j] = document.getElementById(`fila${i}columna${j}`);
         vista[i][j].addEventListener("click",function(){
-            let jugar = true;
             //Representa el turno del jugador y el turno de la IA
-            if(this.innerHTML == ""){
+            if(jugar && this.innerHTML == ""){
                 this.innerHTML = "X";
                 turnoIA(i,j);
                 //Controlamos la vitoria
-                comprobarVictoria();
+                jugar = comprobarVictoria();
             }else{
-                console.log("Casilla no permitida");
+                console.log("No permitida");
             }
         });
     }
@@ -377,13 +378,119 @@ function turnoIA(i,j){
 //Funcion para comprobar quien ha ganado
 function comprobarVictoria(){
     
+    //Comprobacion horizontal
+    let contadorX = 0;
+    let contadorO = 0;
+    let victoria = false;
+    for(let i = 0; i<DIMENSION_MATRIZ && !victoria; i++){
+        for(let j = 0; j<DIMENSION_MATRIZ && !victoria; j++){
+            if(vista[i][j].innerHTML == "O"){
+                contadorO++;
+                contadorX = 0;
+            }else if(vista[i][j].innerHTML == "X"){
+                contadorX++;
+                contadorO = 0;
+            }
+            if(contadorO == 3 || contadorX == 3){
+                victoria = true;
+            }
+        }
+        contadorX = 0;
+        contadorO = 0;
+    }
+    //Comprobaciones diagonal principal
+    if(!victoria){
+        contadorO = 0;
+        contadorX = 0;
+        for(let i = 0; i<DIMENSION_MATRIZ && !victoria; i++){
+            if(vista[i][i].innerHTML == "O"){
+                contadorO++;
+                contadorX = 0;
+            }else if(vista[i][i].innerHTML == "X"){
+                contadorX++;
+                contadorO = 0;
+            }
+            if(contadorO == 3 || contadorX == 3){
+                victoria = true;
+            }
+        }
+        contadorX = 0;
+        contadorO = 0;
+    }
+
+    //Comprobacion diagonal inversa
+    if(!victoria){
+        if(vista[0][2].innerHTML == "X" && vista[1][1].innerHTML == "X" && vista[2][0].innerHTML == "X"){
+            victoria = true;
+            contadorX = 3;
+        }else if(vista[0][2].innerHTML == "X" && vista[2][0].innerHTML == "X" && vista[1][1].innerHTML == "X"){
+            victoria = true;
+            contadorX = 3;
+        }else if(vista[2][0].innerHTML == "X" && vista[1][1].innerHTML == "X" && vista[0][2].innerHTML == "X"){
+            victoria = true;
+            contadorX = 3;
+        }else if(vista[0][2].innerHTML == "O" && vista[1][1].innerHTML == "O" && vista[2][0].innerHTML == "O"){
+            victoria = true;
+            contadorO = 3;
+        }else if(vista[0][2].innerHTML == "O" && vista[2][0].innerHTML == "O" && vista[1][1].innerHTML == "O"){
+            victoria = true;
+            contadorO = 3;
+        }else if(vista[2][0].innerHTML == "O" && vista[1][1].innerHTML == "O" && vista[0][2].innerHTML == "O"){
+            victoria = true;
+            contadorO = 3;
+        }
+    }
+    //Comprobacion vertical
+    if(!victoria){
+        contadorO = 0;
+        contadorX = 0;
+        for(let j = 0; j<DIMENSION_MATRIZ && !victoria; j++){
+            for(let i = 0; i<DIMENSION_MATRIZ && !victoria; i++){
+                if(vista[i][j].innerHTML == "O"){
+                    contadorO++;
+                    contadorX = 0;
+                }else if(vista[i][j].innerHTML == "X"){
+                    contadorX++;
+                    contadorO = 0;
+                }
+                if(contadorO == 3 || contadorX == 3){
+                    victoria = true;
+                }
+            }
+        }
+    }
+    
+    //Sumamos los puntos
+    if(victoria){
+        console.log(vista);
+        if(contadorO == 3){
+            puntosIA++;
+            document.getElementById("resultadoIA").innerHTML = ("IA = " + puntosIA);
+            document.getElementById("mensaje").innerHTML = "Ganador IA";
+        }else if(contadorX == 3){
+            puntosJ++;
+            document.getElementById("resultadoJ").innerHTML = ("J1 = " + puntosJ);
+            document.getElementById("mensaje").innerHTML = "Ganador Jugador";
+        }
+        setTimeout(function(){
+            console.log("Esperando")
+            borrar();
+            jugar = true;
+        },3000);
+        return false;
+    }else{
+        return true;
+    }
 }
 
 //Boton reiniciar
-document.getElementById("btn").children[0].addEventListener("click",()=>{
+document.getElementById("btn").children[0].addEventListener("click",borrar);
+
+
+function borrar(){
     for(let i = 0; i<DIMENSION_MATRIZ; i++){
         for(let j = 0; j<DIMENSION_MATRIZ; j++){
             vista[i][j].innerHTML = "";
         }
     }
-});
+}
