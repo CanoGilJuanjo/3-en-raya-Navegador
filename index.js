@@ -377,12 +377,15 @@ function turnoIA(i,j){
 
 //Funcion para comprobar quien ha ganado
 function comprobarVictoria(){
-    
-    //Comprobacion horizontal
+    //Variables necesarias para las comprobaciones
     let contadorX = 0;
     let contadorO = 0;
     let victoria = false;
+
+    //Comprobacion horizontal
     for(let i = 0; i<DIMENSION_MATRIZ && !victoria; i++){
+        contadorX = 0;
+        contadorO = 0;
         for(let j = 0; j<DIMENSION_MATRIZ && !victoria; j++){
             if(vista[i][j].innerHTML == "O"){
                 contadorO++;
@@ -395,9 +398,8 @@ function comprobarVictoria(){
                 victoria = true;
             }
         }
-        contadorX = 0;
-        contadorO = 0;
     }
+
     //Comprobaciones diagonal principal
     if(!victoria){
         contadorO = 0;
@@ -414,8 +416,6 @@ function comprobarVictoria(){
                 victoria = true;
             }
         }
-        contadorX = 0;
-        contadorO = 0;
     }
 
     //Comprobacion diagonal inversa
@@ -423,28 +423,34 @@ function comprobarVictoria(){
         if(vista[0][2].innerHTML == "X" && vista[1][1].innerHTML == "X" && vista[2][0].innerHTML == "X"){
             victoria = true;
             contadorX = 3;
+            contadorO = 0;
         }else if(vista[0][2].innerHTML == "X" && vista[2][0].innerHTML == "X" && vista[1][1].innerHTML == "X"){
             victoria = true;
             contadorX = 3;
+            contadorO = 0;
         }else if(vista[2][0].innerHTML == "X" && vista[1][1].innerHTML == "X" && vista[0][2].innerHTML == "X"){
             victoria = true;
             contadorX = 3;
+            contadorO = 0;
         }else if(vista[0][2].innerHTML == "O" && vista[1][1].innerHTML == "O" && vista[2][0].innerHTML == "O"){
             victoria = true;
             contadorO = 3;
+            contadorX = 0;
         }else if(vista[0][2].innerHTML == "O" && vista[2][0].innerHTML == "O" && vista[1][1].innerHTML == "O"){
             victoria = true;
             contadorO = 3;
+            contadorX = 0;
         }else if(vista[2][0].innerHTML == "O" && vista[1][1].innerHTML == "O" && vista[0][2].innerHTML == "O"){
             victoria = true;
             contadorO = 3;
+            contadorX = 0;
         }
     }
     //Comprobacion vertical
     if(!victoria){
-        contadorO = 0;
-        contadorX = 0;
         for(let j = 0; j<DIMENSION_MATRIZ && !victoria; j++){
+            contadorO = 0;
+            contadorX = 0;
             for(let i = 0; i<DIMENSION_MATRIZ && !victoria; i++){
                 if(vista[i][j].innerHTML == "O"){
                     contadorO++;
@@ -475,6 +481,7 @@ function comprobarVictoria(){
         setTimeout(function(){
             console.log("Esperando")
             borrar();
+            document.getElementById("mensaje").innerHTML = "";
             jugar = true;
         },3000);
         return false;
